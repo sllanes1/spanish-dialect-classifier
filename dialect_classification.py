@@ -68,8 +68,8 @@ print("\n===============================================")
 print("   Bienvenidos to the Spanish Dialect Classifier  ")
 print("---------------------------------------------------")
 print("This model predicts whether a sentence is:")
-print("   🇲🇽  Mexican Spanish (mx)")
-print("   🇪🇸  European Spanish (es)")
+print("    Mexican Spanish (mx)")
+print("    European Spanish (es)")
 print("---------------------------------------------------")
 print("Type a sentence to classify it.")
 print("Type 'quit' to exit :) ")
@@ -102,5 +102,5 @@ while True:
     es_prob = prob[classes.index("es")]
 
     print(f"\nPredicted dialect: {pred.upper()}")
-    print(f"   🇲🇽 MX probability: {mx_prob:.3f}")
-    print(f"   🇪🇸 ES probability: {es_prob:.3f}\n")
+    print(f"   MX probability: {mx_prob:.3f}")
+    print(f"   ES probability: {es_prob:.3f}\n")
