@@ -1,0 +1,43 @@
+# Spanish Dialect Classifier
+
+This project implements a TF-IDF + Logistic Regression model to classify Spanish sentences as either Mexican Spanish (MX) or Peninsular Spanish (ES). The classifier is trained on sentence-level text data, including curated slang representative of each dialect. After training, the program provides an interactive mode where users can input sentences and receive real-time predictions.
+
+## Project Structure
+
+```
+finalproject/
+│
+├── dialect_classification.py      # Main classifier script
+├── split_slang_both.py            # Script to split slang datasets into individual files
+│
+└── data/
+    └── clean/
+         ├── mx/                   # Mexican Spanish sentences (one per .txt file)
+         └── es/                   # Spain Spanish sentences (one per .txt file)
+```
+
+## Interactive Usage
+
+After the model trains, you can enter any Spanish sentence:
+
+```
+Enter a Spanish sentence: no manches wey
+Predicted dialect: MX
+MX probability: 0.76
+ES probability: 0.24
+```
+
+Exit using:
+
+```
+quit
+```
+
+## Data Sources
+...
+
+## Authors
+
+Sharon Llanes  
+Andrew Maza  
+CMPU 366 — Final Project
