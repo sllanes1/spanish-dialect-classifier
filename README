@@ -4,28 +4,56 @@ This project implements a TF-IDF + Logistic Regression model to classify Spanish
 
 ## Project Structure
 
-```
 finalproject/
-│
-├── dialect_classification.py      # Main classifier script
-├── split_slang_both.py            # Script to split slang datasets into individual files
-│
 └── data/
     └── clean/
          ├── mx/                   # Mexican Spanish sentences (one per .txt file)
          └── es/                   # Spain Spanish sentences (one per .txt file)
-```
+├── dialect_classification.py      # Main classifier script
+├── split_slang_both.py            # Script to split slang datasets into individual files
+├── README
+
+
+## Requirements
+
+Python 3.9+
+scikit-learn
+numpy
+pandas
+
+Install dependencies with:
+pip install scikit-learn numpy pandas
+
+
+## Data Preparation
+
+All text data is preprocessed to:
+- lowercase text
+- remove punctuation and non-alphabetic characters
+- filter sentences with fewer than four words
+- balance the number of sentences per dialect
+
+Each sentence is saved as an individual .txt file in its corresponding dialect directory.
+
 
 ## Interactive Usage
 
-After the model trains, you can enter any Spanish sentence:
+After the model finishes training, an optional interactive mode allows users to input custom Spanish sentences and inspect the model’s predicted dialect probabilities. This feature is intended for qualitative analysis and debugging, not for computing evaluation metrics.
+
+
+Enter any Spanish sentence:
 
 ```
-Enter a Spanish sentence: no manches wey
+Enter a Spanish sentence: No manches wey
 Predicted dialect: MX
 MX probability: 0.76
 ES probability: 0.24
 ```
+
+This interactive testing helps reveal:
+- how the model responds to informal or slang-heavy input,
+- confidence differences across dialects,
+- common error patterns and decision boundary behavior.
 
 Exit using:
 
@@ -34,10 +62,40 @@ quit
 ```
 
 ## Data Sources
-...
+
+This project uses a multi-source dataset designed to capture dialectal variation between Mexican Spanish (MX) and Peninsular Spanish (ES) while mitigating genre and register bias.
+
+The dataset consists of the following components:
+
+Spanish Wikipedia Dump
+Full-text articles from the Spanish Wikipedia were used as a large-scale, publicly available source of written Spanish. Articles include indirect regional cues such as country-specific terminology and topic associations. Sentences were then filtered, cleaned, and balanced across dialects.
+
+Project Gutenberg (Peninsular Spanish)
+Public-domain Spanish texts from Project Gutenberg were used to supplement formal Peninsular Spanish. These texts provide grammatically consistent, edited sentences and serve as a formal baseline for ES.
+
+Manually Curated Slang and Conversational Sentences
+To capture informal and dialect-specific usage, a small set of manually written sentences was added for each dialect. These sentences incorporate regionally distinctive slang and conversational structures (e.g., “güey”, “órale” for Mexico; “tío”, “vale” for Peninsular Spanish) and were created using pedagogical resources curated by native speakers.
+
+All data was preprocessed to remove punctuation and non-alphabetic characters, lowercase text, and ensure balanced representation across dialects. Each sentence is stored as an individual .txt file to support clean document-level classification.
+
+## Evaluation
+
+Model performance is evaluated using:
+- Accuracy
+- Precision
+- Recall
+- F1-score (per dialect)
+
+Qualitative evaluation is performed by testing the model on unseen dialect-specific sentences and examining confidence scores and misclassification patterns.
+
 
 ## Authors
 
 Sharon Llanes  
 Andrew Maza  
 CMPU 366 — Final Project
+
+
+## Notes
+
+This project is intended for an analysis of dialectal variation and should not be used for profiling or evaluative judgments about any spanish speakers.
