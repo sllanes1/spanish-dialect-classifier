@@ -4,16 +4,17 @@ This project implements a TF-IDF + Logistic Regression model to classify Spanish
 
 ## Project Structure
 
+```text
 finalproject/
-└── data/
-    └── clean/
-         ├── mx/                   # Mexican Spanish sentences (one per .txt file)
-         └── es/                   # Spain Spanish sentences (one per .txt file)
-├── dialect_classification.py      # Main classifier script
-├── split_slang_both.py            # Script to split slang datasets into individual files
-├── README
-
-
+├── data/
+│   └── clean/
+│       ├── mx/            # Mexican Spanish sentences (one per .txt file)
+│       └── es/            # Spain Spanish sentences (one per .txt file)
+├── dialect_classification.py   # Main classifier script
+├── split_slang_both.py         # Script to split slang datasets into individual files
+├── test_sentences.py           # Contains 10 (MEX & ES) obvious sentences, 5 (MEX & ES) ambiguous sentences
+├── README.md 
+```
 ## Requirements
 
 Python 3.9+
@@ -35,19 +36,33 @@ All text data is preprocessed to:
 
 Each sentence is saved as an individual .txt file in its corresponding dialect directory.
 
+## Quick Test Suite (test_sentences.py)
+
+Before entering interactive mode, the script automatically evaluates the trained model on a small, hand-curated test suite:
+
+10 MX “obvious” sentences
+
+10 ES “obvious” sentences
+
+5 neutral sentences expected to lean MX
+
+5 neutral sentences expected to lean ES
+
+The output prints predicted labels, probability scores, and accuracy per group. This is meant for qualitative debugging and checking whether the model is relying on dialectal cues rather than topic or place names.
 
 ## Interactive Usage
 
 After the model finishes training, an optional interactive mode allows users to input custom Spanish sentences and inspect the model’s predicted dialect probabilities. This feature is intended for qualitative analysis and debugging, not for computing evaluation metrics.
 
-
-Enter any Spanish sentence:
+Users must enter a sentence containing at least four words. Shorter inputs are rejected to ensure sufficient linguistic context.
 
 ```
-Enter a Spanish sentence: No manches wey
+Enter a Spanish sentence: No manches wey, ese celular está bien caro
+
 Predicted dialect: MX
-MX probability: 0.76
-ES probability: 0.24
+   MX probability: 0.549
+   MX probability: 0.549
+   ES probability: 0.451
 ```
 
 This interactive testing helps reveal:
@@ -60,6 +75,13 @@ Exit using:
 ```
 quit
 ```
+## How to Run
+
+From the project root directory:
+```bash
+python dialect_classification.py
+```
+From there it will print out the quick tests as well as the interactive usage will be available.
 
 ## Data Sources
 
