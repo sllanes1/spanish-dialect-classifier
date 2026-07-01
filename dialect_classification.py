@@ -3,6 +3,7 @@ import glob
 import random
 import re
 import numpy as np
+import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, accuracy_score
@@ -68,6 +69,10 @@ X_test_vec = vectorizer.transform(x_test)
 clf = LogisticRegression(max_iter=4000)
 clf.fit(X_train_vec, y_train)
 
+# Save trained vectorizer and model to disk so api.py can load them without retraining
+with open("model.pkl", "wb") as f:
+    pickle.dump((vectorizer, clf), f)
+ 
 # Predicting and showing what happens!
 pred = clf.predict(X_test_vec)
 prob = clf.predict_proba(X_test_vec)
