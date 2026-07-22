@@ -1,0 +1,18 @@
+# Virtual environment
+.venv/
+
+# Secret keys - never push to GitHub
+.env
+
+# Database - local only
+predictions.db
+
+# Model file - too large for GitHub
+model.pkl
+
+# Python cache
+__pycache__/
+
+# Node modules
+node_modules/
+frontend/node_modules/

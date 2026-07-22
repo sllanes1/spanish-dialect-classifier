@@ -35,8 +35,10 @@ function App() {
     const data = await response.json()
 
     // Format bot reponse with dialect and confidence scores
-    const botText = `hmmm based on our calculations, we think it is.... ${data.predicted_dialect}!  \n| MX: ${(data.mx_probability * 100).toFixed(1)}% | ES: ${(data.es_probability * 100).toFixed(1)}%`
-    
+    const botText = `hmmm based on our calculations, we think it is.... ${data.predicted_dialect}! 
+    MX: ${(data.mx_probability * 100).toFixed(1)}% | ES: ${(data.es_probability * 100).toFixed(1)}%
+    Here's why we predict this: ${data.explanation}`
+
     setMessages(prev => [...prev, {type: "bot", text: botText}])
     setIsLoading(false)
 
