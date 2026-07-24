@@ -5,10 +5,16 @@
   box-sizing: border-box;
 }
 
+.logo {
+  width: 300px;
+  margin: 0 auto;
+  display: block;
+}
+
 body {
   background-color: #0a0a1a;
-  font-family: 'Georgia', serif;
-  color: #f0e6d3;
+  font-family: 'Sour Gummy', cursive;
+  color: #edece8;
   height: 100vh;
 }
 
@@ -25,7 +31,7 @@ body {
 /* HEADER */
 .app h1 {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 3rem;
   background: linear-gradient(90deg, #f5a623, #e8424e, #9b59b6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -36,10 +42,80 @@ body {
 
 .app > p {
   text-align: center;
-  color: #8899aa;
-  font-size: 0.9rem;
+  color: #d9dee4;
+  font-size: 1rem;
   margin-bottom: 20px;
   font-style: italic;
+}
+
+/* Login form */
+.login-form {
+  background: rgba(255, 255, 255, 0.05);
+  border: 5px solid #2a1a4a;
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 0 40px rgba(155, 89, 182, 0.2);
+}
+
+.login-form h2 {
+  text-align: center;
+  background: linear-gradient(90deg,#ae0909 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2rem;
+}
+
+.login-form input {
+  background: #0d0d2b;
+  border: 1px solid #2a1a4a;
+  border-radius: 15px;
+  color: #f4f2ef;
+  font-size: 1.5rem;
+  padding: 12px 16px;
+  outline: none;
+  font-family: 'Sour Gummy', cursive;
+}
+
+.login-form input:focus {
+  border-color: #9b59b6;
+}
+
+.login-form button {
+  background: linear-gradient(90deg, 
+    #012b1e 0%,    /* Mexican green */
+    #013e2a 30%,   /* green holds longer */
+    #393f03 45%,   /* white */
+    #4e3d01 55%,   /* white holds */
+    #61030371 70%,   /* red */
+    #4b020a 100%   /* red holds */
+  );
+  border: none;
+  border-radius: 12px;
+  color: rgb(247, 243, 243);
+  font-size: 1.1rem;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.1s ease;
+  font-family: 'Sour Gummy', cursive;
+}
+
+.login-form button:hover {
+  transform: scale(1.02);
+}
+
+/* ===== ERROR MESSAGE ===== */
+.error {
+  color: #e8424e;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 /* CHAT WINDOW */

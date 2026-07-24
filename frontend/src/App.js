@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 import './App.css';
+import logo from './Dialectobotlogo.png'
 
 function App() {
   // Track what user is currently typing
@@ -8,6 +9,14 @@ function App() {
   const [messages, setMessages] = useState([])
   // Controls "Detectando dialecto..." state while waiting for API
   const [isLoading, setIsLoading] = useState(false)
+  // null = not logged in, string = logged in with JWT token
+  const [token, setToken] = useState(null)
+  // State of the username text field
+  const [username, setUsername] = useState("")
+  // State of the password text field
+  const [password, setPassword] = useState("")
+  // Error state if user DNE
+  const [error, setError] = useState("")
   // Reference to invisible element at bottom of chat for auto-scrolling
   const bottomRef = useRef(null)
   useEffect(() => {
@@ -43,43 +52,111 @@ function App() {
     setIsLoading(false)
 
   }
+
+  async function handleLogin(){
+    // send user and pass to /login via POST
+    const response = await fetch("http://127.0.0.1:8000/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({username, password})
+    })
+    const data = await response.json()
+
+    // if successful save the token with setToken
+    if (response.ok) {
+      setToken(data.token)
+    } else {
+      setError(data.detail || "Something went wrong, try again!")
+    }
+  }
+
+  async function handleSignup(){
+    // send user and pass to /signup via POST
+    const response = await fetch("http://127.0.0.1:8000/signup", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({username, password})
+    })
+    const data = await response.json()
+
+    if (response.ok) {
+      // call /login to get the token
+      const loginResponse = await fetch("http://127.0.0.1:8000/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+      })
+      const loginData = await loginResponse.json()
+      setToken(loginData.token)
+    } else {
+      setError(data.detail || "Something went wrong, try again!")
+    }
+  }
   
   return( 
     <div className="app">
-      <h1>DialectoBot</h1>
+      <img src={logo} alt="DialectoBot" className="logo" />
       <p>Welcome to DialectoBot! Enter any Spanish 
         sentence to detect whether it's Mexican (MX) 
         or Spain (ES) Spanish</p>
       
-      {/* Chat message history */}
-      <div className="chat-window">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.type}`}>
-            <p>{msg.text}</p>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
-      
-      {isLoading && <p className="loading">Detectando dialecto...</p>}
+      {!token ? (
+        // Login form goes here
+        <div className="login-form">
+          <h2> Your Account </h2>
+          <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="username"
+            />
+          <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="password"
+            />
 
-      {/* Input area that's fixed at bottom like a chat app */}
-      <div className="input-area">
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          placeholder="Escribe una frase en español..."
-        />
-        <button onClick={() => handleSubmit()}>
-          Enviar
-        </button>
-      </div>
+          {error && <p className="error">{error}</p>}
+
+          <button onClick={() => handleLogin()}>
+            Login  
+          </button>
+          <button onClick={() => handleSignup()}>
+            SignUp
+          </button>
+        </div>
+      ) : (
+        // Chat interface goes here
+        <>
+          <div className="chat-window">
+            {messages.map((msg, index) => (
+              <div key={index} className={`message ${msg.type}`}>
+                <p>{msg.text}</p>
+              </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+          
+          {isLoading && <p className="loading">Detectando dialecto...</p>}
+
+          <div className="input-area">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              placeholder="Escribe una frase en español..."
+            />
+            <button onClick={() => handleSubmit()}>
+              Enviar
+            </button>
+          </div>
+        </>
+      )}
 
     </div>
   )
-
 
 }
 

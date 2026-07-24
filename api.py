@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
@@ -11,7 +12,7 @@ import numpy as np
 import anthropic
 import bcrypt
 
-
+load_dotenv()
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 app = FastAPI()
 
@@ -25,7 +26,7 @@ app.add_middleware(
 
 # Database setup
 def init_db():
-    conn = sqlite3.connect("predictions.db")
+    conn = sqlite3.connect("dialect.db")
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS predictions (
@@ -59,6 +60,16 @@ with open("model.pkl", "rb") as f:
 # Request shape
 class SentenceRequest(BaseModel):
     sentence: str
+
+# Signup request shape
+class SignupRequest(BaseModel):
+    username: str
+    password: str
+
+# Login request shape
+class LoginRequest(BaseModel):
+    username: str
+    password: str
 
 # Connect with Claude API
 def get_claude_explanation(sentence, predicted_dialect, mx_prob, es_prob, top_mx_features, top_es_features):
@@ -125,7 +136,7 @@ def predict(request: SentenceRequest):
     )
 
     # Save to database
-    conn = sqlite3.connect("predictions.db")
+    conn = sqlite3.connect("dialect.db")
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO predictions (sentence, predicted_dialect, mx_probability, es_probability, timestamp)
@@ -148,7 +159,7 @@ def predict(request: SentenceRequest):
 # History endpoint
 @app.get("/history")
 def history():
-    conn = sqlite3.connect("predictions.db")
+    conn = sqlite3.connect("dialect.db")
     cursor = conn.cursor()
     cursor.execute("SELECT sentence, predicted_dialect, mx_probability, es_probability, timestamp FROM predictions ORDER BY id DESC LIMIT 20")
     rows = cursor.fetchall()
@@ -157,3 +168,56 @@ def history():
         {"sentence": r[0], "dialect": r[1], "mx": r[2], "es": r[3], "time": r[4]}
         for r in rows
     ]
+
+# Signup endpoint
+@app.post("/signup")
+def signup(request: SignupRequest):
+    conn = sqlite3.connect("dialect.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM users WHERE username = ?", (request.username,))
+    existing_user = cursor.fetchone()
+
+    if existing_user:
+        conn.close() 
+        raise HTTPException(status_code=400, detail="Username already exists") 
+
+    # hash password
+    password_hash = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt())
+
+    # save username and password to database
+    cursor.execute("""
+        INSERT INTO users (username, password_hash, created_at)
+        VALUES (?, ?, ?)
+    """, (request.username, password_hash, datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+    
+    return {"message": "Account created successfully!"}
+
+# Login endpoint
+@app.post("/login")
+def login(request: LoginRequest):
+    conn = sqlite3.connect("dialect.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, password_hash FROM users WHERE username = ?", (request.username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # check is password matches the stored hash
+    password_matches = bcrypt.checkpw(request.password.encode("utf-8"), user[2])
+
+    if not password_matches:
+        conn.close()
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    token = jwt.encode(
+    {"user_id": user[0], "username": user[1]},
+    os.getenv("SECRET_KEY"),
+    algorithm="HS256"
+    )
+
+    conn.close()
+    return {"token": token, "username": user[1]}
