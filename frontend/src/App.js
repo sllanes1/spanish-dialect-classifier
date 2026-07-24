@@ -36,7 +36,7 @@ function App() {
     setInputText("")
 
     // Send sentence to FastAPI backend and wait for prediction
-    const response = await fetch("http://127.0.0.1:8000/predict", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/predict`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({sentence: inputText})
@@ -55,7 +55,7 @@ function App() {
 
   async function handleLogin(){
     // send user and pass to /login via POST
-    const response = await fetch("http://127.0.0.1:8000/login", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({username, password})
@@ -72,7 +72,7 @@ function App() {
 
   async function handleSignup(){
     // send user and pass to /signup via POST
-    const response = await fetch("http://127.0.0.1:8000/signup", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/signup`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({username, password})
@@ -81,7 +81,7 @@ function App() {
 
     if (response.ok) {
       // call /login to get the token
-      const loginResponse = await fetch("http://127.0.0.1:8000/login", {
+      const loginResponse = await fetch(`${process.env.REACT_APP_API_URL}/signup`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, password})
